@@ -53,9 +53,9 @@ const getAllBicycles = async (req: Request, res: Response) => {
 
 const getSingleBicycle = async (req: Request, res: Response) => {
   try {
-    const { bicycleId } = req.params;
+    const { productId } = req.params;
 
-    const bicycle = await BicycleServices.getSingleBicycleFromDB(bicycleId);
+    const bicycle = await BicycleServices.getSingleBicycleFromDB(productId);
 
     res.status(200).json({
       message: 'Bicycles retrieved successfully',
@@ -77,11 +77,11 @@ const getSingleBicycle = async (req: Request, res: Response) => {
 
 const updateSingleBicycle = async (req: Request, res: Response) => {
   try {
-    const { bicycleId } = req.params;
+    const { productId } = req.params;
     const updateData = req.body;
 
     // Validate ID format
-    if (!mongoose.Types.ObjectId.isValid(bicycleId)) {
+    if (!mongoose.Types.ObjectId.isValid(productId)) {
       return res.status(400).json({
         message: 'Invalid bicycle ID format',
         success: false,
@@ -89,7 +89,7 @@ const updateSingleBicycle = async (req: Request, res: Response) => {
     }
 
     const result = await BicycleServices.updateSingleBicycleIntoDB(
-      bicycleId,
+      productId,
       updateData,
     );
 
@@ -111,9 +111,50 @@ const updateSingleBicycle = async (req: Request, res: Response) => {
   }
 };
 
+const deleteSingleBicycle = async (req: Request, res: Response) => {
+  try {
+    const { productId } = req.params;
+
+    // Validate ID format
+    if (!mongoose.Types.ObjectId.isValid(productId)) {
+      return res.status(400).json({
+        message: 'Invalid bicycle ID format',
+        success: false,
+      });
+    }
+
+    const result = await BicycleServices.deleteSingleBicycleFromDB(productId);
+
+    // Check if a document was deleted
+    if (result.deletedCount === 0) {
+      return res.status(404).json({
+        message: 'Bicycle not found',
+        success: false,
+      });
+    }
+
+    res.status(200).json({
+      message: 'Bicycle deleted successfully',
+      success: true,
+      data: result,
+    });
+  } catch (error: any) {
+    res.status(500).json({
+      message: 'Failed to delete bicycle',
+      success: false,
+      error: {
+        name: error.name,
+        ...(error.errors && { errors: error.errors }),
+      },
+      stack: `Error: Something went wrong\n  ${error.stack}`,
+    });
+  }
+};
+
 export const BicycleControllers = {
   createBicycle,
   getAllBicycles,
   getSingleBicycle,
   updateSingleBicycle,
+  deleteSingleBicycle
 };

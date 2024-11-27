@@ -38,5 +38,5 @@ export const BicycleServices = {
   getAllBicyclesFromDB,
   getSingleBicycleFromDB,
   updateSingleBicycleIntoDB,
-  deleteSingleBicycleFromDB
+  deleteSingleBicycleFromDB,
 };

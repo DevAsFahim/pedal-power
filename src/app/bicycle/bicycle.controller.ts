@@ -82,10 +82,11 @@ const updateSingleBicycle = async (req: Request, res: Response) => {
 
     // Validate ID format
     if (!mongoose.Types.ObjectId.isValid(productId)) {
-      return res.status(400).json({
+      res.status(400).json({
         message: 'Invalid bicycle ID format',
         success: false,
       });
+      return;
     }
 
     const result = await BicycleServices.updateSingleBicycleIntoDB(
@@ -117,20 +118,22 @@ const deleteSingleBicycle = async (req: Request, res: Response) => {
 
     // Validate ID format
     if (!mongoose.Types.ObjectId.isValid(productId)) {
-      return res.status(400).json({
+      res.status(400).json({
         message: 'Invalid bicycle ID format',
         success: false,
       });
+      return;
     }
 
     const result = await BicycleServices.deleteSingleBicycleFromDB(productId);
 
     // Check if a document was deleted
     if (result.deletedCount === 0) {
-      return res.status(404).json({
+      res.status(404).json({
         message: 'Bicycle not found',
         success: false,
       });
+      return;
     }
 
     res.status(200).json({
@@ -156,5 +159,5 @@ export const BicycleControllers = {
   getAllBicycles,
   getSingleBicycle,
   updateSingleBicycle,
-  deleteSingleBicycle
+  deleteSingleBicycle,
 };

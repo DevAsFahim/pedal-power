@@ -7,8 +7,8 @@ const userSchema = new Schema<IUser>({
   password: { type: String, required: true },
   role: {
     type: String,
-    enum: ['admin', 'user'],
-    default: 'user',
+    enum: ['admin', 'customer'],
+    default: 'customer',
   },
   isBlocked: {
     type: Boolean,

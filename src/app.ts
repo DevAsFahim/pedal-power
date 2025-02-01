@@ -1,6 +1,7 @@
 import express, { Application, Request, Response } from 'express';
 import cors from 'cors';
 import { MainRoutes } from './app/routes';
+import globalErrorHandler from './app/middlewares/globalErrorHandler';
 
 const app: Application = express();
 
@@ -23,5 +24,7 @@ app.all('*', (req: Request, res: Response) => {
     message: 'Route is not found.',
   });
 });
+
+app.use(globalErrorHandler);
 
 export default app;

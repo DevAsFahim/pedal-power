@@ -7,15 +7,6 @@ const orderABicycle = async (req: Request, res: Response) => {
   try {
     const orderData = req.body;
 
-    // Validate product ID format
-    if (!mongoose.Types.ObjectId.isValid(orderData.product)) {
-      res.status(400).json({
-        message: 'Invalid product ID',
-        status: false,
-      });
-      return;
-    }
-
     const bicycle = await Bicycle.findOne({ _id: orderData.product });
 
     // check if bicycle exists or not
@@ -67,7 +58,7 @@ const orderABicycle = async (req: Request, res: Response) => {
 const calculateRevenue = async (req: Request, res: Response) => {
   try {
     const result = await OrderServices.calculateRevenueFromDB();
-    console.log(result)
+    console.log(result);
 
     const totalRevenue = result.length > 0 ? result[0].totalRevenue : 0;
 

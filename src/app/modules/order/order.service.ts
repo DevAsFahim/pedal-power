@@ -1,9 +1,37 @@
+import { StatusCodes } from 'http-status-codes';
+import AppError from '../../error/AppError';
+import Bicycle from '../bicycle/bicycle.model';
 import { IOrder } from './order.interface';
 import Order from './order.model';
 
-const orderABicycleIntoDB = async (orderData: IOrder) => {
-  const order = await Order.create(orderData);
-  return order;
+const orderABicycleIntoDB = async (payload: IOrder) => {
+  const bicycle = await Bicycle.findById(payload.product);
+
+  // check if bicycle exists or not
+  if (!bicycle) {
+    throw new AppError(StatusCodes.NOT_FOUND, 'Bicycle not found!');
+  }
+
+  // check quantity
+  if (bicycle.quantity < payload.quantity) {
+    throw new AppError(
+      StatusCodes.BAD_REQUEST,
+      'Insufficient stock available!',
+    );
+  }
+
+  const result = await Order.create(payload);
+
+  // reduce quantity from bicycle
+  if (result) {
+    bicycle.quantity = bicycle.quantity - result.quantity;
+    if (bicycle.quantity === 0) {
+      bicycle.inStock = false;
+    }
+    await bicycle.save();
+  }
+
+  return result;
 };
 
 const calculateRevenueFromDB = async () => {

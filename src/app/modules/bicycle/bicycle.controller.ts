@@ -26,12 +26,12 @@ const getAllBicycles = catchAsync(async (req, res) => {
 const getSingleBicycle = catchAsync(async (req, res) => {
   const { productId } = req.params;
 
-  const bicycle = await BicycleServices.getSingleBicycleFromDB(productId);
+  const result = await BicycleServices.getSingleBicycleFromDB(productId);
 
   res.status(200).json({
     message: 'Bicycles retrieved successfully',
     success: true,
-    data: bicycle,
+    data: result,
   });
 });
 

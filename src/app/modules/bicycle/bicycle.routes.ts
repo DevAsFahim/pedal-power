@@ -6,7 +6,7 @@ import validateRequest from '../../middlewares/validateRequest';
 const router = express.Router();
 
 router.post(
-  '/',
+  '/create-bicycle',
   validateRequest(BicycleValidations.createBicycleValidationSchema),
   BicycleControllers.createBicycle,
 );

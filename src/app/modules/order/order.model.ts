@@ -3,9 +3,9 @@ import { IOrder } from './order.interface';
 
 const orderSchema = new Schema<IOrder>(
   {
-    email: {
-      type: String,
-      required: [true, 'Email is required.'],
+    user: {
+      type: mongoose.Schema.Types.ObjectId,
+      required: true,
     },
     product: {
       type: mongoose.Schema.Types.ObjectId,

@@ -1,3 +1,5 @@
+import { StatusCodes } from 'http-status-codes';
+import AppError from '../../error/AppError';
 import { IBicycle } from './bicycle.interface';
 import Bicycle from './bicycle.model';
 
@@ -29,6 +31,12 @@ const updateSingleBicycleIntoDB = async (id: string, updateData: object) => {
 };
 
 const deleteSingleBicycleFromDB = async (id: string) => {
+  // Check if a document was deleted
+  const bicycle = await Bicycle.findById(id);
+  if (!bicycle) {
+    throw new AppError(StatusCodes.NOT_FOUND, 'Bicycle not found!');
+  }
+
   const result = await Bicycle.deleteOne({ _id: id });
   return result;
 };

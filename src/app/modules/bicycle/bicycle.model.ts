@@ -12,6 +12,10 @@ const bicycleSchema = new Schema<IBicycle>(
       type: String,
       required: [true, 'Brand is required. Please provide the brand name.'],
     },
+    model: {
+      type: String,
+      required: [true, 'Model is required. Please provide the model name.'],
+    },
     price: {
       type: Number,
       required: [
@@ -46,6 +50,7 @@ const bicycleSchema = new Schema<IBicycle>(
     },
     inStock: {
       type: Boolean,
+      default: true,
     },
   },
   { timestamps: true, versionKey: false },

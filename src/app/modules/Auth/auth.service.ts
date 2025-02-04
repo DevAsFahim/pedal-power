@@ -5,6 +5,7 @@ import { ILoginUser } from './auth.interface';
 import bcrypt from 'bcrypt';
 import jwt, { JwtPayload } from 'jsonwebtoken';
 import config from '../../config';
+import { createToken, verifyToken } from './auth.utils';
 
 const login = async (payload: ILoginUser) => {
   // check if user is exists
@@ -81,7 +82,45 @@ const changePassword = async (
   return null;
 };
 
+const refreshToken = async (token: string) => {
+  // check if the toke is valid
+  const decoded = verifyToken(token, config.jwt_refresh_secret as string);
+
+  const { email, iat } = decoded;
+
+  // check if the user is exists
+  const user = await User.findOne({ email: email });
+
+  if (!user) {
+    throw new AppError(StatusCodes.NOT_FOUND, 'This user is not found !');
+  }
+
+  // check if password is changed
+  if (
+    user.passwordChangedAt &&
+    User.isJWTIssuedBeforePasswordChanged(user.passwordChangedAt, iat as number)
+  ) {
+    throw new AppError(StatusCodes.UNAUTHORIZED, 'You are not authorized');
+  }
+
+  const jwtPayload = {
+    email: user.email,
+    role: user.role,
+  };
+
+  const accessToken = createToken(
+    jwtPayload,
+    config.jwt_access_secret as string,
+    config.jwt_access_expires_in as string,
+  );
+
+  return {
+    accessToken,
+  };
+};
+
 export const AuthServices = {
   login,
   changePassword,
+  refreshToken,
 };

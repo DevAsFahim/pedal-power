@@ -2,6 +2,8 @@ import { StatusCodes } from 'http-status-codes';
 import AppError from '../../error/AppError';
 import { IBicycle } from './bicycle.interface';
 import Bicycle from './bicycle.model';
+import QueryBuilder from '../../builder/QueryBuilder';
+import { bicycleSearchableFields } from './bicycle.constant';
 
 const createBicycleIntoDB = async (bicycle: IBicycle) => {
   const result = await Bicycle.create(bicycle);
@@ -9,10 +11,18 @@ const createBicycleIntoDB = async (bicycle: IBicycle) => {
   return result;
 };
 
-const getAllBicyclesFromDB = async () => {
-  const result = await Bicycle.find();
+const getAllBicyclesFromDB = async (query: Record<string, unknown>) => {
+  const bicycleQuery = new QueryBuilder(Bicycle.find(), query)
+    .search(bicycleSearchableFields)
+    .filter()
+    .sort()
+    .paginate()
+    .fields();
 
-  return result;
+  const result = await bicycleQuery.modelQuery;
+  const meta = await bicycleQuery.countTotal();
+
+  return { meta, result };
 };
 
 const getSingleBicycleFromDB = async (id: string) => {

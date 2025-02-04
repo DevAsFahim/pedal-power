@@ -5,6 +5,7 @@ const createBicycleValidationSchema = z.object({
     name: z.string({ required_error: 'Name is required' }),
     brand: z.string({ required_error: 'Brand is required' }),
     model: z.string({ required_error: 'Model is required' }),
+    image: z.string({ required_error: 'Image is required' }),
     price: z
       .number()
       .min(0, { message: 'Price must be a positive number.' })

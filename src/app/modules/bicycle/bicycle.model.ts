@@ -16,6 +16,10 @@ const bicycleSchema = new Schema<IBicycle>(
       type: String,
       required: [true, 'Model is required. Please provide the model name.'],
     },
+    image: {
+      type: String,
+      required: [true, 'Image is required. Please provide the image name.'],
+    },
     price: {
       type: Number,
       required: [

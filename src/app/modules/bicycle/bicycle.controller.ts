@@ -14,12 +14,13 @@ const createBicycle = catchAsync(async (req, res) => {
 });
 
 const getAllBicycles = catchAsync(async (req, res) => {
-  const result = await BicycleServices.getAllBicyclesFromDB();
+  const result = await BicycleServices.getAllBicyclesFromDB(req.query);
 
   res.status(200).json({
     message: 'All Bicycles retrieved successfully',
     success: true,
-    data: result,
+    meta: result.meta,
+    data: result.result,
   });
 });
 

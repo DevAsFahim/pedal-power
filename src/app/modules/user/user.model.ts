@@ -1,16 +1,20 @@
 import { model, Schema } from 'mongoose';
-import { IUser } from './user.interface';
+import { IUser, UserModel } from './user.interface';
 import bcrypt from 'bcrypt';
 import config from '../../config';
 
-const userSchema = new Schema<IUser>({
+const userSchema = new Schema<IUser, UserModel>({
   name: { type: String, required: true },
   email: { type: String, required: true, unique: true },
   password: { type: String, required: true },
+  address: { type: String, required: true },
   role: {
     type: String,
     enum: ['admin', 'customer'],
     default: 'customer',
+  },
+  passwordChangedAt: {
+    type: Date,
   },
   isBlocked: {
     type: Boolean,
@@ -26,8 +30,18 @@ userSchema.pre('save', async function (next) {
 
 userSchema.post('save', async function (doc, next) {
   doc.password = '';
-  
+
   next();
 });
 
-export const User = model<IUser>('User', userSchema);
+userSchema.statics.isJWTIssuedBeforePasswordChanged = function (
+  passwordChangedTimestamp: Date,
+  jwtIssuedTimestamp: number,
+) {
+  const passwordChangedTime =
+    new Date(passwordChangedTimestamp).getTime() / 1000;
+
+  return passwordChangedTime > jwtIssuedTimestamp;
+};
+
+export const User = model<IUser, UserModel>('User', userSchema);

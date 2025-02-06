@@ -6,10 +6,12 @@ const orderSchema = new Schema<IOrder>(
     user: {
       type: mongoose.Schema.Types.ObjectId,
       required: true,
+      ref: 'User',
     },
     product: {
       type: mongoose.Schema.Types.ObjectId,
       required: [true, 'Product is required.'],
+      ref: 'Bicycle',
     },
     quantity: {
       type: Number,

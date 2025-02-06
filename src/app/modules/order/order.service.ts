@@ -3,10 +3,17 @@ import AppError from '../../error/AppError';
 import Bicycle from '../bicycle/bicycle.model';
 import { IOrder } from './order.interface';
 import Order from './order.model';
+import { JwtPayload } from 'jsonwebtoken';
+import { User } from '../user/user.model';
 
-const orderABicycleIntoDB = async (payload: IOrder) => {
+const createOrderIntoDB = async (userData: JwtPayload, payload: IOrder) => {
+  // check if user exists
+  const user = await User.findOne({ email: userData.email });
+  if (!user) {
+    throw new AppError(StatusCodes.NOT_FOUND, 'User not found!');
+  }
+
   const bicycle = await Bicycle.findById(payload.product);
-
   // check if bicycle exists or not
   if (!bicycle) {
     throw new AppError(StatusCodes.NOT_FOUND, 'Bicycle not found!');
@@ -20,6 +27,8 @@ const orderABicycleIntoDB = async (payload: IOrder) => {
     );
   }
 
+  payload.user = user._id;
+
   const result = await Order.create(payload);
 
   // reduce quantity from bicycle
@@ -30,6 +39,12 @@ const orderABicycleIntoDB = async (payload: IOrder) => {
     }
     await bicycle.save();
   }
+
+  return result;
+};
+
+const getAllOrdersFromDb = async () => {
+  const result = await Order.find().populate('user').populate('product');
 
   return result;
 };
@@ -65,6 +80,7 @@ const calculateRevenueFromDB = async () => {
 };
 
 export const OrderServices = {
-  orderABicycleIntoDB,
+  createOrderIntoDB,
+  getAllOrdersFromDb,
   calculateRevenueFromDB,
 };

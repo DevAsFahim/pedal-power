@@ -5,6 +5,7 @@ import { IOrder } from './order.interface';
 import Order from './order.model';
 import { JwtPayload } from 'jsonwebtoken';
 import { User } from '../user/user.model';
+import QueryBuilder from '../../builder/QueryBuilder';
 
 const createOrderIntoDB = async (userData: JwtPayload, payload: IOrder) => {
   // check if user exists
@@ -43,10 +44,20 @@ const createOrderIntoDB = async (userData: JwtPayload, payload: IOrder) => {
   return result;
 };
 
-const getAllOrdersFromDb = async () => {
-  const result = await Order.find().populate('user').populate('product');
+const getAllOrdersFromDb = async (query: Record<string, unknown>) => {
+  const bicycleQuery = new QueryBuilder(
+    Order.find().populate('user').populate('product'),
+    query,
+  )
+    .filter()
+    .sort()
+    .paginate()
+    .fields();
 
-  return result;
+  const result = await bicycleQuery.modelQuery;
+  const meta = await bicycleQuery.countTotal();
+
+  return { meta, result };
 };
 
 const calculateRevenueFromDB = async () => {

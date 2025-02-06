@@ -14,16 +14,15 @@ const createOrder = catchAsync(async (req, res) => {
 });
 
 const getAllOrders = catchAsync(async (req, res) => {
-  const order = await OrderServices.getAllOrdersFromDb();
+  const result = await OrderServices.getAllOrdersFromDb(req.query);
 
   res.status(200).json({
     message: 'Orders are retrieved successfully',
     status: true,
-    data: order,
+    meta: result.meta,
+    data: result.result,
   });
 });
-
-
 
 const calculateRevenue = catchAsync(async (req, res) => {
   const result = await OrderServices.calculateRevenueFromDB();

@@ -1,13 +1,23 @@
 import { OrderServices } from './order.service';
 import catchAsync from '../../utils/catchAsync';
+import { StatusCodes } from 'http-status-codes';
 
 const createOrder = catchAsync(async (req, res) => {
-  const orderData = req.body;
-
-  const order = await OrderServices.createOrderIntoDB(req.user, orderData);
+  const user = req.user;
+  const order = await OrderServices.createOrderIntoDB(user, req.body, req.ip!);
 
   res.status(200).json({
     message: 'Order created successfully',
+    status: true,
+    data: order,
+  });
+});
+
+const verifyPayment = catchAsync(async (req, res) => {
+  const order = await OrderServices.verifyPayment(req.query.order_id as string);
+
+  res.status(StatusCodes.CREATED).json({
+    message: 'Order verified successfully',
     status: true,
     data: order,
   });
@@ -19,8 +29,9 @@ const getAllOrders = catchAsync(async (req, res) => {
   res.status(200).json({
     message: 'Orders are retrieved successfully',
     status: true,
-    meta: result.meta,
-    data: result.result,
+    // meta: result.meta,
+    // data: result.result,
+    data: result,
   });
 });
 
@@ -40,6 +51,7 @@ const calculateRevenue = catchAsync(async (req, res) => {
 
 export const OrderCollections = {
   createOrder,
+  verifyPayment,
   getAllOrders,
   calculateRevenue,
 };

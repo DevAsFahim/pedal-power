@@ -7,10 +7,14 @@ const router = express.Router();
 
 router.post(
   '/create-order',
-  auth(USER_ROLE.admin, USER_ROLE.customer),
+  auth(USER_ROLE.customer),
   OrderCollections.createOrder,
 );
+
+router.get("/verify", auth(USER_ROLE.customer), OrderCollections.verifyPayment);
+
 router.get('/', auth(USER_ROLE.admin), OrderCollections.getAllOrders);
+
 router.get(
   '/revenue',
   auth(USER_ROLE.admin),

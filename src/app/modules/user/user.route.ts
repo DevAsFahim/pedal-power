@@ -12,5 +12,6 @@ router.post(
 );
 
 router.get('/', UserControllers.getAllUser);
+router.get('/:email', UserControllers.getSingleUser);
 
 export const UserRoutes = router;

@@ -9,7 +9,7 @@ import { createToken, verifyToken } from './auth.utils';
 
 const login = async (payload: ILoginUser) => {
   // check if user is exists
-  const user = await User.findOne({ email: payload.email });
+  const user = await User.findOne({ email: payload.email }).select('+password');
   if (!user) {
     throw new AppError(StatusCodes.BAD_REQUEST, 'User not found!');
   }
@@ -53,7 +53,9 @@ const changePassword = async (
   userData: JwtPayload,
   payload: { oldPassword: string; newPassword: string },
 ) => {
-  const user = await User.findOne({ email: userData.email });
+  const user = await User.findOne({ email: userData.email }).select(
+    '+password',
+  );
 
   if (!user) {
     throw new AppError(StatusCodes.NOT_FOUND, 'This user is not found !');
@@ -89,7 +91,7 @@ const refreshToken = async (token: string) => {
   const { email, iat } = decoded;
 
   // check if the user is exists
-  const user = await User.findOne({ email: email });
+  const user = await User.findOne({ email: email }).select('+password');
 
   if (!user) {
     throw new AppError(StatusCodes.NOT_FOUND, 'This user is not found !');

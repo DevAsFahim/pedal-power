@@ -26,7 +26,6 @@ const getSingleUser = catchAsync(async (req, res) => {
   const { email } = req.params;
 
   const result = await UserServices.getSingleUserFromDB(email);
-  console.log(result)
 
   res.status(httpStatus.OK).json({
     success: true,
@@ -35,8 +34,32 @@ const getSingleUser = catchAsync(async (req, res) => {
   });
 });
 
+const getMe = catchAsync(async (req, res) => {
+  const result = await UserServices.getMeFromDB(req.user);
+
+  res.status(httpStatus.OK).json({
+    success: true,
+    message: 'User is retrieved successfully!',
+    data: result,
+  });
+});
+
+const blockUser = catchAsync(async (req, res) => {
+  const { email } = req.params;
+
+  await UserServices.blockUserFromDB(email);
+
+  res.status(httpStatus.OK).json({
+    success: true,
+    message: 'User is blocked successfully!',
+    data: null,
+  });
+});
+
 export const UserControllers = {
   createUser,
   getAllUser,
   getSingleUser,
+  blockUser,
+  getMe,
 };

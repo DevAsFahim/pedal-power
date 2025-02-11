@@ -35,6 +35,16 @@ const getAllOrders = catchAsync(async (req, res) => {
   });
 });
 
+const getMyOrders = catchAsync(async (req, res) => {
+  const result = await OrderServices.getMyOrdersFromDb(req.user);
+
+  res.status(200).json({
+    message: 'Orders are retrieved for user successfully',
+    status: true,
+    data: result,
+  });
+});
+
 const calculateRevenue = catchAsync(async (req, res) => {
   const result = await OrderServices.calculateRevenueFromDB();
 
@@ -54,4 +64,5 @@ export const OrderCollections = {
   verifyPayment,
   getAllOrders,
   calculateRevenue,
+  getMyOrders,
 };

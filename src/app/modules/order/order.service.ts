@@ -129,6 +129,12 @@ const getAllOrdersFromDb = async (query: Record<string, unknown>) => {
   return { meta, result };
 };
 
+const getMyOrdersFromDb = async (user: JwtPayload) => {
+  const result = Order.find({ user: user._id }).populate('user');
+
+  return result;
+};
+
 const calculateRevenueFromDB = async () => {
   const result = await Order.aggregate([
     {
@@ -163,5 +169,6 @@ export const OrderServices = {
   createOrderIntoDB,
   verifyPayment,
   getAllOrdersFromDb,
+  getMyOrdersFromDb,
   calculateRevenueFromDB,
 };

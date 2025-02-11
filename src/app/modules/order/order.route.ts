@@ -15,6 +15,8 @@ router.get("/verify", auth(USER_ROLE.customer), OrderCollections.verifyPayment);
 
 router.get('/', auth(USER_ROLE.admin), OrderCollections.getAllOrders);
 
+router.get('/my-orders', auth(USER_ROLE.customer,USER_ROLE.admin ), OrderCollections.getMyOrders);
+
 router.get(
   '/revenue',
   auth(USER_ROLE.admin),

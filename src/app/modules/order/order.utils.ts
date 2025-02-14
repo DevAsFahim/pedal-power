@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import Shurjopay, { PaymentResponse, VerificationResponse } from 'shurjopay';
 import config from '../../config';
 
@@ -12,6 +11,8 @@ shurjopay.config(
   config.sp.sp_return_url!,
 );
 
+// console.log(shurjopay);
+
 const makePaymentAsync = async (
   paymentPayload: any,
 ): Promise<PaymentResponse> => {
@@ -22,6 +23,19 @@ const makePaymentAsync = async (
       (error) => reject(error),
     );
   });
+
+  //   const paymentResult = await shurjopay.makePayment(
+  //     paymentPayload,
+  //     (response) => {
+  //       sendResponse(res, {
+  //         statusCode: 200,
+  //         message: "Order placed successfully",
+  //         data: response,
+  //       });
+  //     },
+  //     (error) => console.log(error)
+  //   );
+  //   return paymentResult;
 };
 
 const verifyPaymentAsync = (

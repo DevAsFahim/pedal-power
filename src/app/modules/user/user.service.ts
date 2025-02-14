@@ -28,7 +28,6 @@ const getSingleUserFromDB = async (email: string) => {
 };
 
 const getMeFromDB = async (user: JwtPayload) => {
-  
   const result = await User.findOne({ email: user.email });
 
   return result;

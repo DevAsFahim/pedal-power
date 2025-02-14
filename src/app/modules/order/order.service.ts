@@ -18,7 +18,6 @@ const createOrderIntoDB = async (
   const products = payload.products;
 
   let totalPrice = 0;
-
   const productDetails = await Promise.all(
     products.map(async (item) => {
       const product = await Bicycle.findById(item.product);
@@ -42,10 +41,10 @@ const createOrderIntoDB = async (
     order_id: order._id,
     currency: 'BDT',
     customer_name: user.name,
-    customer_address: 'address',
+    customer_address: user.address,
     customer_email: user.email,
-    customer_phone: 'NA',
-    customer_city: 'NA',
+    customer_phone: 'N/A',
+    customer_city: 'N/A',
     client_ip,
   };
 

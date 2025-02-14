@@ -7,7 +7,7 @@ const app: Application = express();
 
 // parser
 app.use(express.json());
-app.use(cors({ origin: 'http://localhost:5173', credentials: true }));
+app.use(cors({ origin: 'https://pedall.vercel.app', credentials: true }));
 
 // api routes for bicycle
 app.use('/api', MainRoutes);
